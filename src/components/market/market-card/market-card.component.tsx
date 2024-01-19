@@ -6,7 +6,7 @@ import { CurrencyInfo } from "./currency-info";
 
 export function MarketCard({ market }: IMarketCardProps) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ minWidth: 250 }}>
       <CardContent>
         <Typography
           gutterBottom

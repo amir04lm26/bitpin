@@ -1,28 +1,28 @@
-import { Grid, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { IMarketsContainerProps } from "./markets-container.models";
 import { MarketCard } from "../market-card";
 
-export function MarketsContainer({ markets }: IMarketsContainerProps) {
+export function MarketsContainer({ markets, count }: IMarketsContainerProps) {
   return (
-    <div>
+    <>
       <Typography
         gutterBottom
         variant='h6'
         component='p'
         sx={{ textAlign: "center", mb: 3 }}>
-        {markets.count} مارکت یافت شد.
+        {count} مارکت یافت شد.
       </Typography>
 
-      <Grid
-        container
-        columns={{ xs: 4, sm: 8, md: 12 }}
-        justifyContent='center'>
-        {markets.results.map((market) => (
-          <Grid xs={3} key={market.id}>
-            <MarketCard market={market} />
-          </Grid>
+      <Stack
+        direction='row'
+        gap={2}
+        flexWrap='wrap'
+        justifyContent='center'
+        useFlexGap>
+        {markets.map((market) => (
+          <MarketCard key={market.id} market={market} />
         ))}
-      </Grid>
-    </div>
+      </Stack>
+    </>
   );
 }

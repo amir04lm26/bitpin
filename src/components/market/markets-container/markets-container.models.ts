@@ -1,5 +1,6 @@
-import { IMarketsData } from "types";
+import { IMarket } from "types";
 
 export interface IMarketsContainerProps {
-  markets: IMarketsData;
+  markets: IMarket[];
+  count: number;
 }
