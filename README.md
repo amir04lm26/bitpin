@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Considerations
+- Consider creating a .env.local file containing .env.local.template values
+- Node version is v18.18.2
+
 ## Available Scripts
 
 In the project directory, you can run:
