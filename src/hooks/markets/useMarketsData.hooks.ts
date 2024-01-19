@@ -1,9 +1,15 @@
 import { usePagination } from "hooks/pagination";
 import { useState } from "react";
-import { useEffectOnce } from "react-use";
-import { IMarketsData } from "types";
+import { useEffectOnce, useUpdateEffect } from "react-use";
+import { IMarketSocketUpdatesType, IMarketsData } from "types";
 import { fetchMarkets } from "utils/api";
 import { MARKETS_ITEMS_COUNT } from "./markets.constants";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+import { SOCKET_ADDRESS } from "configs";
+import {
+  CURRENCY_PRICE_INFO_UPDATE,
+  SUBSCRIBE_TO_PRICE_INFO,
+} from "utils/constants";
 
 export function useMarketsData() {
   const [loading, setLoading] = useState(false);
@@ -30,6 +36,39 @@ export function useMarketsData() {
       }
     })();
   });
+
+  const { sendJsonMessage, lastJsonMessage, readyState } =
+    useWebSocket<IMarketSocketUpdatesType>(SOCKET_ADDRESS, {
+      share: false,
+      shouldReconnect: () => true,
+    });
+
+  useUpdateEffect(() => {
+    if (readyState === ReadyState.OPEN && markets) {
+      sendJsonMessage({
+        method: SUBSCRIBE_TO_PRICE_INFO,
+      });
+    }
+  }, [readyState, markets]);
+
+  useUpdateEffect(() => {
+    if (
+      lastJsonMessage &&
+      "event" in lastJsonMessage &&
+      lastJsonMessage.event === CURRENCY_PRICE_INFO_UPDATE
+    ) {
+      // NOTE: I don't receive ant market_id so I use the object key as the id
+      if (markets) {
+        const newMarkets = { ...markets };
+        newMarkets.results.forEach((market) => {
+          if (Object.hasOwnProperty.bind(lastJsonMessage, market.id)) {
+            market.price = lastJsonMessage[market.id].price;
+          }
+        });
+        setMarkets(newMarkets);
+      }
+    }
+  }, [lastJsonMessage]);
 
   return {
     markets,

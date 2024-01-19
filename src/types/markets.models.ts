@@ -17,8 +17,8 @@ export interface IMarket {
   otc_buy_percent: string;
   otc_max_buy_amount: string;
   otc_max_sell_amount: string;
-  order_book_info: IOrderBookInfo;
-  internal_price_info: IInternalPriceInfo;
+  order_book_info: IPriceInfo;
+  internal_price_info: IPriceInfo;
   price_info: IPriceInfo;
   price: string;
   title: string;
@@ -36,32 +36,8 @@ export interface IMarket {
   freshness_weight: number;
 }
 
-export interface IOrderBookInfo {
-  created_at: string | null;
-  price: string;
-  change: number;
-  min: string;
-  max: string;
-  time: string;
-  mean: string;
-  value: string;
-  amount: string;
-}
-
-export interface IInternalPriceInfo {
-  created_at: number;
-  price: string;
-  change: number;
-  min: string;
-  max: string;
-  time: null;
-  mean: null;
-  value: null;
-  amount: null;
-}
-
 export interface IPriceInfo {
-  created_at: number;
+  created_at: number | null;
   price: string;
   change: number;
   min: string;
@@ -71,3 +47,11 @@ export interface IPriceInfo {
   value: null;
   amount: null;
 }
+
+export type IMarketSocketUpdatesType =
+  | { message: string }
+  | {
+      event: string;
+      [id: number]: IPriceInfo;
+    }
+  | undefined;
